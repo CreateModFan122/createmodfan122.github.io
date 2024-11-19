@@ -1,1 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Mod Simulator</title>
+    <style>
+        /* CSS Styles */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            margin: 20px;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .component {
+            width: 50px;
+            height: 50px;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+        .workspace {
+            width: 80%;
+            height: 400px;
+            border: 2px dashed #333;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Welcome to the Create Mod Simulator</h1>
+    </header>
+
+    <div class="toolbar">
+        <h2>Components</h2>
+        <div class="component" id="gear" draggable="true">
+            <img src="images/gear.png" alt="Gear">
+        </div>
+        <div class="component" id="belt" draggable="true">
+            <img src="images/belt.png" alt="Belt">
+        </div>
+        <!-- Add more components here -->
+    </div>
+
+    <div class="workspace" id="workspace">
+        <!-- Workspace for building contraptions -->
+        <p>Drag components here to build your contraption!</p>
+    </div>
+
+    <div class="controls">
+        <button id="startSim">Start Simulation</button>
+        <button id="reset">Reset</button>
+    </div>
+
+    <script>
+        // JavaScript Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const components = document.querySelectorAll('.component');
+            const workspace = document.getElementById('workspace');
+            const startSimButton = document.getElementById('startSim');
+            const resetButton = document.getElementById('reset');
+
+            components.forEach(component => {
+                component.addEventListener('dragstart', dragStart);
+            });
+
+            workspace.addEventListener('dragover', dragOver);
+            workspace.addEventListener('drop', drop);
+
+            function dragStart(e) {
+                e.dataTransfer.setData('text', e.target.id); // Store the id of the dragged element
+            }
+
+            function dragOver(e) {
+                e.preventDefault(); // Allow dropping
+            }
+
+            function drop(e) {
+                e.preventDefault();
+                const id = e.dataTransfer.getData('text');
+                const draggedComponent = document.getElementById(id);
+                const newComponent = draggedComponent.cloneNode(true); // Create a copy to place
+                newComponent.style.position = 'absolute';
+                newComponent.style.left = `${e.offsetX}px`;
+                newComponent.style.top = `${e.offsetY}px`;
+
+                workspace.appendChild(newComponent);
+            }
+
+            // Start Simulation (example: rotate gear when button is clicked)
+            startSimButton.addEventListener('click', () => {
+                const gears = workspace.querySelectorAll('#gear');
+                gears.forEach(gear => {
+                    gear.style.transition = 'transform 1s';
+                    gear.style.transform = 'rotate(360deg)';
+                });
+            });
+
+            // Reset workspace
+            resetButton.addEventListener('click', () => {
+                workspace.innerHTML = '<p>Drag components here to build your contraption!</p>';
+            });
+        });
+    </script>
+
+</body>
+</html>
 
